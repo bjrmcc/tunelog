@@ -1,10 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const PROTECTED_ROUTES = ["/diary", "/albums", "/lists", "/profile"];
+const AUTH_ROUTES = ["/login", "/signup"];
+
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request,
-  });
+  let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,7 +16,7 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet, headers) {
-          cookiesToSet.forEach(({ name, value, options }) => {
+          cookiesToSet.forEach(({ name, value }) => {
             request.cookies.set(name, value);
           });
           response = NextResponse.next({ request });
@@ -30,17 +31,35 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh session — must be called before any response is returned
-  await supabase.auth.getUser();
+  // Always call getUser() first — refreshes the session if needed
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { pathname } = request.nextUrl;
+
+  const isProtected = PROTECTED_ROUTES.some((r) => pathname.startsWith(r));
+  const isAuthPage = AUTH_ROUTES.some((r) => pathname.startsWith(r));
+
+  // Unauthenticated user hitting a protected page → send to login
+  if (!user && isProtected) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // Authenticated user hitting login/signup → send to diary
+  if (user && isAuthPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/diary";
+    return NextResponse.redirect(url);
+  }
 
   return response;
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except static files and Next.js internals.
-     */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

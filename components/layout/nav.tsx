@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "@/lib/auth/actions";
+
+type NavUser = { id: string; username: string | null } | null;
 
 const tabs = [
   {
@@ -61,9 +64,27 @@ const tabs = [
         <line x1="8" y1="6" x2="21" y2="6" />
         <line x1="8" y1="12" x2="21" y2="12" />
         <line x1="8" y1="18" x2="21" y2="18" />
-        <line x1="3" y1="6" x2="3.01" y2="6" strokeWidth={active ? 3 : 1.75} />
-        <line x1="3" y1="12" x2="3.01" y2="12" strokeWidth={active ? 3 : 1.75} />
-        <line x1="3" y1="18" x2="3.01" y2="18" strokeWidth={active ? 3 : 1.75} />
+        <line
+          x1="3"
+          y1="6"
+          x2="3.01"
+          y2="6"
+          strokeWidth={active ? 3 : 1.75}
+        />
+        <line
+          x1="3"
+          y1="12"
+          x2="3.01"
+          y2="12"
+          strokeWidth={active ? 3 : 1.75}
+        />
+        <line
+          x1="3"
+          y1="18"
+          x2="3.01"
+          y2="18"
+          strokeWidth={active ? 3 : 1.75}
+        />
       </svg>
     ),
   },
@@ -88,9 +109,13 @@ const tabs = [
   },
 ];
 
-export default function Nav() {
+const AUTH_PAGES = ["/login", "/signup"];
+
+export default function Nav({ user }: { user: NavUser }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isAuthPage = AUTH_PAGES.includes(pathname);
+  const showTabBar = !isHome && !isAuthPage;
 
   return (
     <>
@@ -110,27 +135,48 @@ export default function Nav() {
           >
             tunelog
           </Link>
-          <div className="flex items-center gap-1">
-            <Link
-              href="/login"
-              className="rounded px-3 py-1.5 text-sm"
-              style={{ color: "var(--muted-foreground)" }}
-            >
-              Log in
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded px-3 py-1.5 text-sm font-medium"
-              style={{ background: "var(--accent)", color: "#fff" }}
-            >
-              Sign up
-            </Link>
-          </div>
+
+          {user ? (
+            <div className="flex items-center gap-3">
+              <span
+                className="text-sm"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                {user.username ?? "account"}
+              </span>
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="rounded px-3 py-1.5 text-sm transition-opacity hover:opacity-70"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
+                  Sign out
+                </button>
+              </form>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1">
+              <Link
+                href="/login"
+                className="rounded px-3 py-1.5 text-sm"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                Log in
+              </Link>
+              <Link
+                href="/signup"
+                className="rounded px-3 py-1.5 text-sm font-medium"
+                style={{ background: "var(--accent)", color: "#fff" }}
+              >
+                Sign up
+              </Link>
+            </div>
+          )}
         </div>
       </header>
 
-      {/* Bottom tab bar — hidden on landing page */}
-      {!isHome && (
+      {/* Bottom tab bar */}
+      {showTabBar && (
         <nav
           className="fixed bottom-0 left-0 right-0 z-50"
           style={{
@@ -148,7 +194,9 @@ export default function Nav() {
                   href={href}
                   className="flex flex-1 flex-col items-center justify-center gap-0.5 py-3"
                   style={{
-                    color: active ? "var(--accent)" : "var(--muted-foreground)",
+                    color: active
+                      ? "var(--accent)"
+                      : "var(--muted-foreground)",
                   }}
                 >
                   {icon(active)}
