@@ -1,4 +1,4 @@
-export default function AlbumsPage() {
+export default function ProfilePage() {
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
       <div className="mb-8">
@@ -6,10 +6,10 @@ export default function AlbumsPage() {
           className="text-2xl font-semibold tracking-tight"
           style={{ color: "var(--foreground)" }}
         >
-          Albums
+          Profile
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--muted-foreground)" }}>
-          Every album you've rated or logged.
+          Your activity and stats.
         </p>
       </div>
 
@@ -18,7 +18,7 @@ export default function AlbumsPage() {
         style={{ borderColor: "var(--border)" }}
       >
         <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>
-          No albums yet. Sign in to get started.
+          Sign in to view your profile.
         </p>
       </div>
     </main>

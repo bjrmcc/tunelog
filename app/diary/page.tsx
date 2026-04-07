@@ -1,6 +1,6 @@
 export default function DiaryPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-12">
+    <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1

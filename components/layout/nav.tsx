@@ -3,73 +3,162 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const links = [
-  { href: "/diary", label: "Diary" },
-  { href: "/albums", label: "Albums" },
-  { href: "/lists", label: "Lists" },
+const tabs = [
+  {
+    href: "/diary",
+    label: "Diary",
+    icon: (active: boolean) => (
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill={active ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <line x1="3" y1="9" x2="21" y2="9" />
+        <line x1="9" y1="4" x2="9" y2="9" />
+        <line x1="15" y1="4" x2="15" y2="9" />
+      </svg>
+    ),
+  },
+  {
+    href: "/albums",
+    label: "Albums",
+    icon: (active: boolean) => (
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill={active ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
+  {
+    href: "/lists",
+    label: "Lists",
+    icon: (active: boolean) => (
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <line x1="8" y1="6" x2="21" y2="6" />
+        <line x1="8" y1="12" x2="21" y2="12" />
+        <line x1="8" y1="18" x2="21" y2="18" />
+        <line x1="3" y1="6" x2="3.01" y2="6" strokeWidth={active ? 3 : 1.75} />
+        <line x1="3" y1="12" x2="3.01" y2="12" strokeWidth={active ? 3 : 1.75} />
+        <line x1="3" y1="18" x2="3.01" y2="18" strokeWidth={active ? 3 : 1.75} />
+      </svg>
+    ),
+  },
+  {
+    href: "/profile",
+    label: "Profile",
+    icon: (active: boolean) => (
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill={active ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+      </svg>
+    ),
+  },
 ];
 
 export default function Nav() {
   const pathname = usePathname();
+  const isHome = pathname === "/";
 
   return (
-    <header
-      style={{
-        borderBottom: "1px solid var(--border)",
-        background: "var(--background)",
-      }}
-      className="sticky top-0 z-50"
-    >
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <div className="flex items-center gap-8">
+    <>
+      {/* Top header */}
+      <header
+        className="sticky top-0 z-50"
+        style={{
+          borderBottom: "1px solid var(--border)",
+          background: "var(--background)",
+        }}
+      >
+        <div className="mx-auto flex h-12 max-w-2xl items-center justify-between px-4">
           <Link
             href="/"
-            className="text-base font-semibold tracking-tight"
+            className="text-sm font-semibold tracking-tight"
             style={{ color: "var(--foreground)" }}
           >
             tunelog
           </Link>
-          <nav className="flex items-center gap-1">
-            {links.map(({ href, label }) => {
+          <div className="flex items-center gap-1">
+            <Link
+              href="/login"
+              className="rounded px-3 py-1.5 text-sm"
+              style={{ color: "var(--muted-foreground)" }}
+            >
+              Log in
+            </Link>
+            <Link
+              href="/signup"
+              className="rounded px-3 py-1.5 text-sm font-medium"
+              style={{ background: "var(--accent)", color: "#fff" }}
+            >
+              Sign up
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Bottom tab bar — hidden on landing page */}
+      {!isHome && (
+        <nav
+          className="fixed bottom-0 left-0 right-0 z-50"
+          style={{
+            background: "var(--background)",
+            borderTop: "1px solid var(--border)",
+            paddingBottom: "env(safe-area-inset-bottom)",
+          }}
+        >
+          <div className="mx-auto flex max-w-2xl">
+            {tabs.map(({ href, label, icon }) => {
               const active = pathname.startsWith(href);
               return (
                 <Link
                   key={href}
                   href={href}
-                  className="rounded px-3 py-1.5 text-sm transition-colors"
+                  className="flex flex-1 flex-col items-center justify-center gap-0.5 py-3"
                   style={{
-                    color: active
-                      ? "var(--foreground)"
-                      : "var(--muted-foreground)",
-                    background: active ? "var(--muted)" : "transparent",
+                    color: active ? "var(--accent)" : "var(--muted-foreground)",
                   }}
                 >
-                  {label}
+                  {icon(active)}
+                  <span className="text-[10px] font-medium">{label}</span>
                 </Link>
               );
             })}
-          </nav>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/login"
-            className="rounded px-3 py-1.5 text-sm transition-colors"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            Log in
-          </Link>
-          <Link
-            href="/signup"
-            className="rounded px-3 py-1.5 text-sm font-medium transition-opacity hover:opacity-80"
-            style={{
-              background: "var(--accent)",
-              color: "#fff",
-            }}
-          >
-            Sign up
-          </Link>
-        </div>
-      </div>
-    </header>
+          </div>
+        </nav>
+      )}
+    </>
   );
 }

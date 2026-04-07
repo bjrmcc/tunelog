@@ -3,23 +3,23 @@ import Link from "next/link";
 const features = [
   {
     title: "Diary",
-    description:
-      "Log every listen. Keep a running record of what you've heard and when, with notes for each session.",
+    description: "Log every listen with notes and dates.",
+    href: "/diary",
   },
   {
     title: "Ratings",
-    description:
-      "Rate albums and individual tracks on a half-star scale. Leave a review or just the score.",
+    description: "Rate albums and tracks on a half-star scale.",
+    href: "/albums",
   },
   {
     title: "Rankings",
-    description:
-      "Build ordered lists — your top albums of the year, your favourite records of a decade, whatever you want.",
+    description: "Build ordered lists of your favourite records.",
+    href: "/lists",
   },
   {
     title: "Lists",
-    description:
-      "Curate unranked collections. Themes, moods, recommendations — lists without the pressure of ordering.",
+    description: "Curate collections without the pressure of ranking.",
+    href: "/lists",
   },
 ];
 
@@ -27,9 +27,9 @@ export default function Home() {
   return (
     <main className="flex flex-col flex-1">
       {/* Hero */}
-      <section className="flex flex-col items-center justify-center px-4 py-32 text-center">
+      <section className="flex flex-col items-center justify-center px-6 py-20 text-center">
         <h1
-          className="mb-4 text-5xl font-semibold tracking-tight sm:text-6xl"
+          className="mb-3 text-4xl font-semibold tracking-tight sm:text-5xl"
           style={{ color: "var(--foreground)" }}
         >
           Track every album.
@@ -37,23 +37,22 @@ export default function Home() {
           <span style={{ color: "var(--accent)" }}>Rate every listen.</span>
         </h1>
         <p
-          className="mb-10 max-w-md text-lg leading-relaxed"
+          className="mb-8 max-w-sm text-base leading-relaxed"
           style={{ color: "var(--muted-foreground)" }}
         >
-          tunelog is a music diary for people who take listening seriously. Log
-          albums, rate tracks, build lists and rankings — all in one place.
+          A music diary for people who take listening seriously.
         </p>
-        <div className="flex items-center gap-3">
+        <div className="flex w-full max-w-xs flex-col gap-2 sm:flex-row sm:max-w-none sm:justify-center">
           <Link
             href="/signup"
-            className="rounded px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80"
+            className="flex h-11 items-center justify-center rounded-lg px-6 text-sm font-medium"
             style={{ background: "var(--accent)", color: "#fff" }}
           >
             Get started
           </Link>
           <Link
             href="/login"
-            className="rounded border px-5 py-2.5 text-sm transition-colors hover:opacity-80"
+            className="flex h-11 items-center justify-center rounded-lg border px-6 text-sm"
             style={{
               borderColor: "var(--border)",
               color: "var(--muted-foreground)",
@@ -66,29 +65,24 @@ export default function Home() {
 
       {/* Features */}
       <section
-        className="border-t"
+        className="border-t px-6 py-8"
         style={{ borderColor: "var(--border)" }}
       >
-        <div className="mx-auto grid max-w-5xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature, i) => (
+        <div className="mx-auto grid max-w-2xl grid-cols-2 gap-4">
+          {features.map((feature) => (
             <div
               key={feature.title}
-              className="flex flex-col gap-2 px-8 py-10"
-              style={{
-                borderRight:
-                  i < features.length - 1
-                    ? "1px solid var(--border)"
-                    : undefined,
-              }}
+              className="flex flex-col gap-1.5 rounded-lg p-4"
+              style={{ background: "var(--muted)" }}
             >
               <h3
-                className="text-sm font-semibold uppercase tracking-widest"
+                className="text-xs font-semibold uppercase tracking-widest"
                 style={{ color: "var(--accent)" }}
               >
                 {feature.title}
               </h3>
               <p
-                className="text-sm leading-relaxed"
+                className="text-sm leading-snug"
                 style={{ color: "var(--muted-foreground)" }}
               >
                 {feature.description}
